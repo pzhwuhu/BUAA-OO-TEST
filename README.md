@@ -28,7 +28,7 @@ python quickInput_elevator3-2.py
 ```
   * 代码L11可以选择是否将输出打印到终端，input_to_terminal = True
   * 错误信息将记录在`output_error.txt`中
-  * 附带性能评估， like this: ![](assets/end.png)
+  * 附带性能评估， like this: ![](./end.png)
 ### 2. 批量测试
 
 * 用于测试testcase目录下的所有测试用例：
