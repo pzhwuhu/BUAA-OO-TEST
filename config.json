@@ -1,0 +1,14 @@
+{
+    "time_limit":50,
+    "command_limit":20,
+    "fault_tolerance":0.02,
+    
+    "elevator_num":6,
+    "default_floor":"F1",
+    "min_floor":"B4",
+    "max_floor":"F7",
+    "move_time":0.4,
+    "open_time":0.2,
+    "close_time":0.2,
+    "max_capacity":6
+}
