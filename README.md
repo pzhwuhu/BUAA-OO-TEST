@@ -1,6 +1,7 @@
 # 电梯调度评测机
 
 这是一个用于测试电梯调度算法的评测系统。该系统支持多种测试模式，包括单用例测试、批量测试和并行测试。
+正确性校验部分(quickInput_elevator2_refactor.py)来自于@[Accepted0424](https://github.com/Accepted0424), 我负责测试用例构造和并行测试
 
 ## 文件结构
 
