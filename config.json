@@ -1,0 +1,6 @@
+{
+    "test_num": 10000,
+    "run_time_limit": 10,
+    "command_num_max": 10000,
+    "error_folder_name": "errors"
+}
