@@ -1,0 +1,6 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "d:\\Programs\\Java\\jdk_1.8\\lib\\javafx-mx.jar"
+    ]
+}
