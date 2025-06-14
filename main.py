@@ -1,0 +1,102 @@
+import time
+from subprocess import STDOUT, PIPE
+from functools import lru_cache
+import glob
+import os
+from colorama import Fore, Back, Style
+import sympy
+import datetime
+from generate import preTreatment
+from run_java import execute_java
+from run_java import execute_py
+
+import func_timeout
+from func_timeout import func_set_timeout
+import sys
+
+def generate():
+    # 调用 generate.py 生成随机表达式，同时调用 parse_func.dll 进行预处理
+    poly = execute_py("", "generate.py")
+    # 对 dx 替换
+    origin = execute_java(poly, "parse_func.dll")[0].replace("dx", "diff")
+    return poly, origin
+
+@lru_cache(maxsize=None)
+@func_set_timeout(20)
+def evaluate(origin, poly, name):
+    out = ""
+    try:
+        out = execute_java(poly, name)[0]
+    except func_timeout.exceptions.FunctionTimedOut as e:
+        current_time = datetime.datetime.now().strftime("%Y-%m-%d@%H-%M-%S@" + os.path.splitext(jar_file)[0].split("\\")[1])
+        with open("./errors/" + current_time + ".log", "w") as f:
+            f.write(os.path.basename(jar_file) + ": Time Limit Exceeded.\n")
+            f.write("Input:\n" + poly + "\n")
+            f.write("Origin:\n" + origin + "\n")
+        return False, -1
+
+    oriSym = sympy.sympify(preTreatment(origin))
+    outSym = sympy.sympify(preTreatment(out))
+    check_result = execute_java(out, "checker.dll")[0].split("\n")[0]
+    if check_result == "true" and oriSym.equals(outSym):
+        outLen = len(out)
+        print(name + ": " + Fore.GREEN + "Accepted" + Fore.WHITE + " with length " + str(outLen))
+        return True, str(outLen)
+    else:
+        current_time = datetime.datetime.now().strftime("%Y-%m-%d@%H-%M-%S@" + os.path.splitext(jar_file)[0].split("\\")[1])
+        with open("./errors/" + current_time + ".log", "w") as f:
+            f.write(os.path.basename(jar_file) + ": Wrong Answer.\n")
+            f.write("Input:\n" + poly + "\n")
+            f.write("Origin:\n" + origin + "\n")
+            f.write("User Answer:\n" + out + "\n")
+        return False, -1
+
+sys.setrecursionlimit(10000)
+os.system('cls' if os.name == 'nt' else 'clear')
+print("============ INITIALIZATION ============")
+directory = './'
+jar_files = glob.glob(os.path.join(directory, '*.jar'))
+for jar_file in jar_files:
+    print(jar_file)
+
+os.system('cls' if os.name == 'nt' else 'clear')
+i = 0
+wrong = 0
+tle = 0
+while True:
+    i += 1
+    print("---->   epoch " + str(i) + "   ---   wrong: " + str(wrong) + "   ---   tle: " + str(tle) + "   <----")
+    poly, origin = generate()
+    print("Origin Input:\n" + poly)
+    length = -1
+    for jar_file in jar_files:
+        name = os.path.splitext(jar_file)[0].split("\\")[1]
+        try:
+            res = evaluate(origin, poly, str(os.path.basename(jar_file)))
+            if not res[0]:
+                print(str(name) + ": " + Fore.RED + "Wrong or TLE\n" + Fore.WHITE)
+                wrong += 1
+            else:
+                if length == -1:
+                    length = res[1]
+                elif length != res[1] and length != 0:
+                    length = 0
+                    with open("./performance.log", "a") as f:
+                        f.write("Input:\n" + poly + "\n")
+                        f.write("Origin:\n" + origin + "\n")
+                        f.write("\n\n===================================================\n")
+            pass
+        except func_timeout.exceptions.FunctionTimedOut as e:
+            tle += 1
+            print(str(os.path.basename(jar_file)) + ": " + Fore.WHITE + "Prase Time Limit Exceeded" + Fore.WHITE)
+        except Exception as e:
+            wrong += 1
+            print(str(os.path.basename(jar_file)) + ": " + Fore.RED + "Error\n" + Fore.WHITE)
+            current_time = datetime.datetime.now().strftime("%Y-%m-%d@%H-%M-%S@" + name)
+            with open("./errors/" + current_time + ".log", "w") as f:
+                f.write(os.path.basename(jar_file) + ": No output or illegal output.\n")
+                f.write("Input:\n" + poly + "\n")
+                f.write("Origin:\n" + origin + "\n")
+                f.write("Error:\n" + str(e) + "\n")
+    time.sleep(0.75)
+    os.system('cls' if os.name == 'nt' else 'clear')
