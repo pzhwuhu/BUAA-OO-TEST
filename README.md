@@ -3,7 +3,7 @@
 ## 系统概述
 
 * 这是一个用于评测OO U3 社交网络模拟程序的自动化评测系统，支持多线程测试、错误检测和详细错误报告生成。系统能够自动生成多样化的测试数据，执行测试用例，并验证程序的正确性。
-* 整体评测框架来自于[wxf学长的评测机](https://github.com/zhangyitonggg/BUAA-2024-OO-test/tree/hw9)，主要优化了数据的生成部分
+* 整体评测框架来自于[wxf学长的评测机](https://github.com/zhangyitonggg/BUAA-2024-OO-test/tree/hw9)，由@[UHO](https://github.com/TheUHO)修改符合本单元要求，我主要优化了数据的生成部分，即generator.py
 
 ## 主要特点
 
